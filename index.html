@@ -1,27 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Akses Kamera</title>
+  <title>Permission & Info Viewer</title>
 </head>
 <body>
-  <h1>Kamera Viewer</h1>
-  <video id="video" width="640" height="480" autoplay playsinline></video>
-  <p id="status">Menunggu izin kamera...</p>
+  <h1>Permission Info</h1>
+
+  <h2>🎥 Kamera</h2>
+  <video id="video" width="320" height="240" autoplay playsinline></video>
+  <p id="cameraStatus">Menunggu izin kamera...</p>
+
+  <h2>📍 Lokasi</h2>
+  <p id="locationStatus">Menunggu izin lokasi...</p>
+  <p id="locationInfo"></p>
+
+  <h2>🎤 Mikrofon</h2>
+  <p id="micStatus">Menunggu izin mikrofon...</p>
+
+  <h2>🌐 Info Browser</h2>
+  <p id="uaInfo"></p>
 
   <script>
+    // ====== Kamera ======
     const video = document.getElementById('video');
-    const status = document.getElementById('status');
+    const cameraStatus = document.getElementById('cameraStatus');
 
-    // Minta akses kamera
     navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
         video.srcObject = stream;
-        status.textContent = "Kamera aktif!";
+        cameraStatus.textContent = "Kamera aktif!";
       })
       .catch(err => {
-        status.textContent = "Gagal mengakses kamera: " + err.message;
-        console.error("Error kamera:", err);
+        cameraStatus.textContent = "Gagal mengakses kamera: " + err.message;
       });
+
+    // ====== Lokasi ======
+    const locationStatus = document.getElementById('locationStatus');
+    const locationInfo = document.getElementById('locationInfo');
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        locationStatus.textContent = "Lokasi berhasil diperoleh!";
+        locationInfo.textContent = `Latitude: ${lat}, Longitude: ${lon}`;
+      }, err => {
+        locationStatus.textContent = "Gagal mengakses lokasi: " + err.message;
+      });
+    } else {
+      locationStatus.textContent = "Browser tidak mendukung Geolocation.";
+    }
+
+    // ====== Mikrofon ======
+    const micStatus = document.getElementById('micStatus');
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(stream => {
+        micStatus.textContent = "Izin mikrofon diberikan.";
+        stream.getTracks().forEach(track => track.stop()); // matikan langsung
+      })
+      .catch(err => {
+        micStatus.textContent = "Gagal mengakses mikrofon: " + err.message;
+      });
+
+    // ====== User-Agent Info ======
+    document.getElementById("uaInfo").textContent = navigator.userAgent;
   </script>
 </body>
 </html>
